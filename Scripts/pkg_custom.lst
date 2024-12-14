@@ -3,6 +3,7 @@ ufw                                                    # firewall
 timeshift                                              # backup utility
 downgrade                                              # downgrade packages
 kdeconnect                                             # wireless communication between devices
+auto-cpufreq                                           # automatic power optimization
 # trash-cli-git                                        # cli to manage trash files
 # libinput-gestures                                    # actions touchpad gestures using libinput
 # gestures                                             # gui for libinput-gestures
@@ -22,6 +23,7 @@ gamescope                                              # micro-compositor for ga
 # --------------------------------------------------- // Media
 feh                                                    # minimal image viewer
 mpv                                                    # better video player
+evince                                                 # minimal document viewer
 cava                                                   # audio visualizer
 spotify                                                # proprietary music streaming service
 spicetify-cli                                          # cli to customize spotify client
