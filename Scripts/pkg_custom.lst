@@ -16,7 +16,9 @@ gamemode                                               # daemon and library for 
 mangohud                                               # system performance overlay
 gamescope                                              # micro-compositor for gaming
 
-# --------------------------------------------------- // Music
+# --------------------------------------------------- // Media
+feh                                                    # minimal image viewer
+mpv                                                    # better video player
 cava                                                   # audio visualizer
 spotify                                                # proprietary music streaming service
 spicetify-cli                                          # cli to customize spotify client
