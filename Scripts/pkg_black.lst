@@ -7,3 +7,5 @@
 # flatpak
 visual-studio-code-bin
 
+# core
+python-pyamdgpuinfo
