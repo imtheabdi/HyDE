@@ -10,14 +10,15 @@ cacheDir="${cacheDir:-$XDG_CACHE_HOME/hyde}"
 rofi_config="${confDir}/rofi/clipboard.rasi"
 
 # Set rofi scaling
-[[ "${rofiScale}" =~ ^[0-9]+$ ]] || rofiScale=10
+rofiScale="${ROFI_EMOJI_SCALE}"
+[[ "${rofiScale}" =~ ^[0-9]+$ ]] || rofiScale=${ROFI_SCALE:-10}
 r_scale="configuration {font: \"JetBrainsMono Nerd Font ${rofiScale}\";}"
 hypr_border=${hypr_border:-"$(hyprctl -j getoption decoration:rounding | jq '.int')"}
 wind_border=$((hypr_border * 3 / 2))
 elem_border=$((hypr_border == 0 ? 5 : hypr_border))
 
 # Set rofi location
-rofi_position=$(get_rofi_follow_mouse)
+rofi_position=$(get_rofi_pos)
 
 hypr_width=${hypr_width:-"$(hyprctl -j getoption general:border_size | jq '.int')"}
 r_override="window{border:${hypr_width}px;border-radius:${wind_border}px;}wallbox{border-radius:${elem_border}px;} element{border-radius:${elem_border}px;}"
@@ -85,7 +86,7 @@ unique_entries=$(echo -e "${combined_entries}" | awk '!seen[$0]++')
 if [[ -n ${useRofile} ]]; then
     dataEmoji=$(rofi -dmenu -i -config "${useRofile}" <<<"${unique_entries}")
 else
-
+    emoji_style="${ROFI_EMOJI_STYLE}"
     case ${emoji_style} in
     2 | grid)
         size_override=""

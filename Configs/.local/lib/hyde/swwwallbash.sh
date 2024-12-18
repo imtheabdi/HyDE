@@ -66,11 +66,11 @@ set -a
 # shellcheck disable=SC1090
 source "${wallbashOut}"
 # shellcheck disable=SC2154
-if [ -f "${hydeThemeDir}/theme.dcol" ] && [ "${enableWallDcol}" -eq 0 ]; then
+if [ -f "${HYDE_THEME_DIR}/theme.dcol" ] && [ "${enableWallDcol}" -eq 0 ]; then
     # shellcheck disable=SC1091
-    source "${hydeThemeDir}/theme.dcol"
-    print_log -sec "wallbash" -stat "override" "dominant colors from ${hydeTheme} theme"
-    print_log -sec "wallbash" -stat " NOTE" "Remove \"${hydeThemeDir}/theme.dcol\" to use wallpaper dominant colors"
+    source "${HYDE_THEME_DIR}/theme.dcol"
+    print_log -sec "wallbash" -stat "override" "dominant colors from ${HYDE_THEME} theme"
+    print_log -sec "wallbash" -stat " NOTE" "Remove \"${HYDE_THEME_DIR}/theme.dcol\" to use wallpaper dominant colors"
 fi
 # shellcheck disable=SC2154
 [ "${dcol_mode}" == "dark" ] && dcol_invt="light" || dcol_invt="dark"
@@ -92,7 +92,7 @@ export gtkTheme gtkIcon cursorTheme
 fn_wallbash() {
     local template="${1}"
     local target_file exec_command
-    wallbashScripts="${template%%hyde/wallbash*}hyde/wallbash/scripts"
+    WALLBASH_SCRIPTS="${template%%hyde/wallbash*}hyde/wallbash/scripts"
     if [[ "${template}" == *.theme ]]; then
         # This is approach is to handle the theme files
         # We don't want themes to launch the exec_command or any arbitrary codes
@@ -105,15 +105,14 @@ fn_wallbash() {
         if [[ -n "${dcolTemplate}" ]]; then
             eval target_file="$(head -1 "${dcolTemplate}" | awk -F '|' '{print $1}')"
             exec_command="$(head -1 "${dcolTemplate}" | awk -F '|' '{print $2}')"
-            wallbashScripts="${dcolTemplate%%hyde/wallbash*}hyde/wallbash/scripts"
+            WALLBASH_SCRIPTS="${dcolTemplate%%hyde/wallbash*}hyde/wallbash/scripts"
 
         fi
     fi
 
     # shellcheck disable=SC1091
     # shellcheck disable=SC2154
-    [ -f "${hydeConfDir}/hyderc" ] && source "${hydeConfDir}/hyderc"
-    # Skips the the template declared in ./hyderc
+    [ -f "$HYDE_STATE_HOME/staterc" ] && source "$HYDE_STATE_HOME/staterc"
     if [[ -n "${skip_wallbash[*]}" ]]; then
         for skip in "${skip_wallbash[@]}"; do
             if [[ "${template}" =~ ${skip} ]]; then
@@ -125,7 +124,8 @@ fn_wallbash() {
 
     [ -z "${target_file}" ] && eval target_file="$(head -1 "${template}" | awk -F '|' '{print $1}')"
     [ ! -d "$(dirname "${target_file}")" ] && print_log -sec "wallbash" -warn "skip 'missing directory'" "${target_file} // Do you have the dependency installed?" && return 0
-    export wallbashScripts confDir hydeConfDir cacheDir thmbDir dcolDir iconsDir themesDir fontsDir wallbashDirs enableWallDcol hydeThemeDir hydeTheme gtkIcon gtkTheme cursorTheme
+    export wallbashScripts="${WALLBASH_SCRIPTS}"
+    export WALLBASH_SCRIPTS confDir hydeConfDir cacheDir thmbDir dcolDir iconsDir themesDir fontsDir wallbashDirs enableWallDcol HYDE_THEME_DIR HYDE_THEME gtkIcon gtkTheme cursorTheme
     export -f pkg_installed print_log
     # exec_command="$(head -1 "${template}" | awk -F '|' '{print $2}')"
     exec_command="${exec_command:-"$(head -1 "${template}" | awk -F '|' '{print $2}')"}"
@@ -349,11 +349,11 @@ fi
 # shellcheck disable=SC2154
 if [ "${enableWallDcol}" -eq 0 ] && [[ "${reload_flag}" -eq 1 ]]; then
 
-    print_log -sec "wallbash" -stat "apply ${dcol_mode} colors" "${hydeTheme} theme"
-    mapfile -d '' -t deployList < <(find "${hydeThemeDir}" -type f -name "*.theme" -print0)
+    print_log -sec "wallbash" -stat "apply ${dcol_mode} colors" "${HYDE_THEME} theme"
+    mapfile -d '' -t deployList < <(find "${HYDE_THEME_DIR}" -type f -name "*.theme" -print0)
 
     while read -r pKey; do
-        fKey="$(find "${hydeThemeDir}" -type f -name "$(basename "${pKey%.dcol}.theme")")"
+        fKey="$(find "${HYDE_THEME_DIR}" -type f -name "$(basename "${pKey%.dcol}.theme")")"
         [ -z "${fKey}" ] && deployList+=("${pKey}")
     done < <(find "${wallbashDirs[@]}" -type f -path "*/theme*" -name "*.dcol" 2>/dev/null | awk '!seen[substr($0, match($0, /[^/]+$/))]++')
 
